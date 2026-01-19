@@ -5,7 +5,7 @@ import org.example.View.CityMapView;
 import org.example.model.CityGraph;
 import org.example.model.Intersection;
 
-import java.awt.event.MouseEvent;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,29 +16,40 @@ public class CityController {
     private Integer destination;
     private Timer trafficTimer;
 
-    private CityMapView view; // ✅ SINGLE VIEW REFERENCE
+    private CityMapView view;
 
     public CityController(CityGraph cityGraph) {
         this.cityGraph = cityGraph;
     }
 
     public void setView(CityMapView view) {
-        this.view = view; // ✅ assigned properly
+        this.view = view;
     }
 
     public void selectIntersection(int id) {
         if (source == null) {
             source = id;
-            System.out.println("Source selected: " + id);
+            System.out.println("SOURCE selected: " + source);
+
         } else if (destination == null) {
             destination = id;
-            System.out.println("Destination selected: " + id);
+            System.out.println("DESTINATION selected: " + destination);
+
         } else {
             reset();
             source = id;
-            System.out.println("Source reset: " + id);
+            System.out.println("RESET — new SOURCE selected: " + source);
         }
+
+        printSelectionState();
     }
+
+    private void printSelectionState() {
+        System.out.println("Current State -> source=" + source + ", destination=" + destination);
+    }
+
+
+
 
     public void reset() {
         source = null;
@@ -80,15 +91,17 @@ public class CityController {
     }
 
 
-    public void onIntersectionClicked(Intersection intersection, javafx.scene.input.MouseEvent e) {
-        if (e.getButton() == MouseButton.PRIMARY) {
-            intersection.setPolluted(!intersection.isPolluted());
-        }
-
-        if (e.getButton() == MouseButton.SECONDARY) {
-            intersection.setCrowded(!intersection.isCrowded());
-        }
-
+    public void onIntersectionClicked(Intersection intersection) {
+        selectIntersection(intersection.getId());
         view.drawCity();
+    }
+
+
+    public Integer getSource() {
+        return source;
+    }
+
+    public Integer getDestination() {
+        return destination;
     }
 }

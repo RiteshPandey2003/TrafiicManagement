@@ -11,7 +11,7 @@ import org.example.model.CityGraph;
 public class Main extends Application {
 
     public static void main(String[] args) {
-        launch(args);   // ✅ REQUIRED
+        launch(args);
     }
 
     @Override
