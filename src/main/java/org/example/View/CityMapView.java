@@ -36,16 +36,22 @@ public class CityMapView extends Canvas {
     }
 
     public void drawCity() {
+        root.getChildren().clear();
         drawRoads();
         drawIntersections();
+
+        System.out.println(root);
     }
 
     private void drawRoads() {
 
         for (int from : cityGraph.getAllIntersectionsIds()) {
 
+
             Intersection a = cityGraph.getIntersection(from);
             List<Road> roads = cityGraph.getRoads(from);
+
+            System.out.println(a  + " roads -> " + roads);
 
             for (Road road : roads) {
 
@@ -78,15 +84,23 @@ public class CityMapView extends Canvas {
                     6
             );
 
-            circle.setFill(Color.DODGERBLUE);
+
+            if (intersection.isPolluted() && intersection.isCrowded()) {
+                circle.setFill(Color.PURPLE);
+            } else if (intersection.isPolluted()) {
+                circle.setFill(Color.GREEN);
+            } else if (intersection.isCrowded()) {
+                circle.setFill(Color.RED);
+            } else {
+                circle.setFill(Color.DODGERBLUE);
+            }
 
             circle.setOnMouseClicked(e ->
-                    controller.onIntersectionClicked(intersection)
+                    controller.onIntersectionClicked(intersection, e)
             );
 
             root.getChildren().add(circle);
         }
     }
-
 
 }

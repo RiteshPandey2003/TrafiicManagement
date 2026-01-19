@@ -47,4 +47,9 @@ public class Intersection {
     public  double getY() {
         return y;
     }
+
+    @Override
+    public String toString(){
+        return "[ " + id + " " + isPolluted + " " + isCrowded + " ]";
+    }
 }

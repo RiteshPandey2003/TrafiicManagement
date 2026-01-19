@@ -76,5 +76,7 @@ public class Main extends Application {
         stage.setTitle("Smart City Simulation");
         stage.setScene(scene);
         stage.show();
+
+        controller.startTrafficSimulation();
     }
 }

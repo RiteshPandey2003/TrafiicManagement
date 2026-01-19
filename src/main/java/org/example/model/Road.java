@@ -38,4 +38,9 @@ public class Road {
     public int getWeight() {
         return distance + trafficLevel;
     }
+
+    @Override
+    public String toString(){
+        return "[ " + from + " " + to + " " + distance + " " + trafficLevel +" ]";
+    }
 }

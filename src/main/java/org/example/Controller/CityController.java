@@ -1,9 +1,11 @@
 package org.example.Controller;
 
+import javafx.scene.input.MouseButton;
 import org.example.View.CityMapView;
 import org.example.model.CityGraph;
 import org.example.model.Intersection;
 
+import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,10 +56,16 @@ public class CityController {
         trafficTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                int randomTraffic = (int) (Math.random() * 20);
-                cityGraph.updateTraffic(1, 2, randomTraffic);
 
-                // JavaFX UI update must be on FX thread
+                for (Intersection i : cityGraph.getAllIntersections()) {
+
+                    int traffic = (int) (Math.random() * 100);
+
+
+                    i.setCrowded(traffic > 60);
+                    i.setPolluted(traffic > 90);
+                }
+
                 javafx.application.Platform.runLater(() ->
                         view.drawCity()
                 );
@@ -71,11 +79,16 @@ public class CityController {
         }
     }
 
-    public void onIntersectionClicked(Intersection intersection) {
-        System.out.println("Intersection clicked: " + intersection.getId());
 
-        intersection.setPolluted(!intersection.isPolluted());
+    public void onIntersectionClicked(Intersection intersection, javafx.scene.input.MouseEvent e) {
+        if (e.getButton() == MouseButton.PRIMARY) {
+            intersection.setPolluted(!intersection.isPolluted());
+        }
 
-        view.drawCity(); // ✅ SAFE
+        if (e.getButton() == MouseButton.SECONDARY) {
+            intersection.setCrowded(!intersection.isCrowded());
+        }
+
+        view.drawCity();
     }
 }
