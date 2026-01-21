@@ -9,8 +9,8 @@ import org.example.model.CityGraph;
 
 public class Main extends Application {
 
-    private static final int GRID_SIZE = 12;     // 🔥 increase for BIGGER city
-    private static final int GAP = 60;            // distance between intersections
+    private static final int GRID_SIZE = 12;
+    private static final int GAP = 60;
     private static final int START_X = 80;
     private static final int START_Y = 80;
 
@@ -21,7 +21,7 @@ public class Main extends Application {
 
         int id = 1;
 
-        // 🔹 Create intersections
+
         int[][] ids = new int[GRID_SIZE][GRID_SIZE];
 
         for (int row = 0; row < GRID_SIZE; row++) {
@@ -36,28 +36,28 @@ public class Main extends Application {
             }
         }
 
-        // 🔹 Create roads
+
         for (int row = 0; row < GRID_SIZE; row++) {
             for (int col = 0; col < GRID_SIZE; col++) {
 
                 int current = ids[row][col];
 
-                // Right road
+
                 if (col < GRID_SIZE - 1) {
                     graph.addRoad(current, ids[row][col + 1], 10);
                 }
 
-                // Bottom road
+
                 if (row < GRID_SIZE - 1) {
                     graph.addRoad(current, ids[row + 1][col], 10);
                 }
             }
         }
 
-        // CONTROLLER
+
         CityController controller = new CityController(graph);
 
-        // VIEW
+
         CityMapView view = new CityMapView(graph, controller);
         controller.setView(view);
 
