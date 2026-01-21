@@ -4,6 +4,7 @@ import javafx.scene.input.MouseButton;
 import org.example.View.CityMapView;
 import org.example.model.CityGraph;
 import org.example.model.Intersection;
+import org.example.model.PathResult;
 
 
 import java.util.Timer;
@@ -15,6 +16,7 @@ public class CityController {
     private Integer source;
     private Integer destination;
     private Timer trafficTimer;
+    private PathResult currentPath;
 
     private CityMapView view;
 
@@ -34,7 +36,7 @@ public class CityController {
         } else if (destination == null) {
             destination = id;
             System.out.println("DESTINATION selected: " + destination);
-
+            computeShortestPath();
         } else {
             reset();
             source = id;
@@ -77,9 +79,15 @@ public class CityController {
                     i.setPolluted(traffic > 90);
                 }
 
-                javafx.application.Platform.runLater(() ->
-                        view.drawCity()
-                );
+                javafx.application.Platform.runLater(() -> {
+
+                    view.drawCity();
+
+                    // 🔥 LIVE ROUTE UPDATE
+                    if (source != null && destination != null) {
+                        computeShortestPath();
+                    }
+                });
             }
         }, 0, 3000);
     }
@@ -97,6 +105,7 @@ public class CityController {
     }
 
 
+
     public Integer getSource() {
         return source;
     }
@@ -104,4 +113,19 @@ public class CityController {
     public Integer getDestination() {
         return destination;
     }
+
+    public PathResult getCurrentPath() { return currentPath; }
+
+    private void computeShortestPath() {
+
+        if (source == null || destination == null) return;
+
+        currentPath = cityGraph.dijkstra(source, destination);
+
+        System.out.println("Shortest Path = " + currentPath.getPath());
+
+        // 🔥 THIS WAS MISSING
+        view.setPath(currentPath.getPath());
+    }
+
 }

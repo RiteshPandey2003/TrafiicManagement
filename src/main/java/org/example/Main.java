@@ -3,65 +3,56 @@ package org.example;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import org.example.Controller.CityController;
 import org.example.View.CityMapView;
 import org.example.model.CityGraph;
 
 public class Main extends Application {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    private static final int GRID_SIZE = 12;     // 🔥 increase for BIGGER city
+    private static final int GAP = 60;            // distance between intersections
+    private static final int START_X = 80;
+    private static final int START_Y = 80;
 
     @Override
     public void start(Stage stage) {
 
-        // MODEL
         CityGraph graph = new CityGraph();
 
-        graph.addIntersection(1, 100, 100);   // North-West
-        graph.addIntersection(2, 300, 100);   // North
-        graph.addIntersection(3, 500, 100);   // North-East
+        int id = 1;
 
-        graph.addIntersection(4, 100, 300);   // West
-        graph.addIntersection(5, 300, 300);   // Center
-        graph.addIntersection(6, 500, 300);   // East
+        // 🔹 Create intersections
+        int[][] ids = new int[GRID_SIZE][GRID_SIZE];
 
-        graph.addIntersection(7, 100, 500);   // South-West
-        graph.addIntersection(8, 300, 500);   // South
-        graph.addIntersection(9, 500, 500);   // South-East
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
 
-        // Horizontal roads (top)
-        graph.addRoad(1, 2, 10);
-        graph.addRoad(2, 3, 10);
+                double x = START_X + col * GAP;
+                double y = START_Y + row * GAP;
 
-       // Horizontal roads (middle)
-        graph.addRoad(4, 5, 8);
-        graph.addRoad(5, 6, 8);
+                graph.addIntersection(id, x, y);
+                ids[row][col] = id;
+                id++;
+            }
+        }
 
-        // Horizontal roads (bottom)
-        graph.addRoad(7, 8, 12);
-        graph.addRoad(8, 9, 12);
+        // 🔹 Create roads
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
 
-        // Vertical roads (left)
-        graph.addRoad(1, 4, 15);
-        graph.addRoad(4, 7, 15);
+                int current = ids[row][col];
 
-        // Vertical roads (center)
-        graph.addRoad(2, 5, 10);
-        graph.addRoad(5, 8, 10);
+                // Right road
+                if (col < GRID_SIZE - 1) {
+                    graph.addRoad(current, ids[row][col + 1], 10);
+                }
 
-        // Vertical roads (right)
-        graph.addRoad(3, 6, 15);
-        graph.addRoad(6, 9, 15);
-
-        // Diagonal shortcuts
-        graph.addRoad(1, 5, 20);
-        graph.addRoad(5, 9, 20);
-        graph.addRoad(3, 5, 20);
-        graph.addRoad(5, 7, 20);
-
+                // Bottom road
+                if (row < GRID_SIZE - 1) {
+                    graph.addRoad(current, ids[row + 1][col], 10);
+                }
+            }
+        }
 
         // CONTROLLER
         CityController controller = new CityController(graph);
@@ -70,13 +61,16 @@ public class Main extends Application {
         CityMapView view = new CityMapView(graph, controller);
         controller.setView(view);
 
-        // SCENE
-        Scene scene = new Scene(view.getRoot(), 800, 600);
+        Scene scene = new Scene(view.getRoot(), 900, 900);
 
-        stage.setTitle("Smart City Simulation");
+        stage.setTitle("Smart City – Large Graph");
         stage.setScene(scene);
         stage.show();
 
         controller.startTrafficSimulation();
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }

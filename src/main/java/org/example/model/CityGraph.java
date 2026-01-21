@@ -95,4 +95,77 @@ public class CityGraph {
     }
 
 
+    public PathResult dijkstra(int source, int destination) {
+
+        Map<Integer, Double> dist = new HashMap<>();
+        Map<Integer, Integer> prev = new HashMap<>();
+
+        PriorityQueue<int[]> pq =
+                new PriorityQueue<>(Comparator.comparingDouble(a -> a[1]));
+
+        for (int id : getAllIntersectionsIds()) {
+            dist.put(id, Double.POSITIVE_INFINITY);
+        }
+
+        dist.put(source, 0.0);
+        pq.add(new int[]{source, 0});
+
+        while (!pq.isEmpty()) {
+
+            int[] curr = pq.poll();
+            int u = curr[0];
+
+            if (u == destination) break;
+
+            for (Road road : getRoads(u)) {
+
+                int v = road.getTo();
+
+                double baseDistance = road.getDistance();
+
+                // 🚦 NEW LOGIC
+                double penalty = getIntersectionPenalty(v);
+
+                double totalWeight = baseDistance + penalty;
+
+                double alt = dist.get(u) + totalWeight;
+
+                if (alt < dist.get(v)) {
+                    dist.put(v, alt);
+                    prev.put(v, u);
+                    pq.add(new int[]{v, (int) alt});
+                }
+            }
+        }
+
+        // 🔁 Path reconstruction
+        List<Integer> path = new ArrayList<>();
+        Integer step = destination;
+
+        while (step != null) {
+            path.add(0, step);
+            step = prev.get(step);
+        }
+
+        return new PathResult(path, dist.get(destination));
+    }
+
+
+    private double getIntersectionPenalty(int intersectionId) {
+        Intersection i = intersections.get(intersectionId);
+
+        double penalty = 0;
+
+        if (i.isCrowded()) {
+            penalty += 20;
+        }
+
+        if (i.isPolluted()) {
+            penalty += 40;
+        }
+
+        return penalty;
+    }
+
+
 }
