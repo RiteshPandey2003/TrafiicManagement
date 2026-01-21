@@ -1,6 +1,6 @@
 package org.example.Controller;
 
-import javafx.scene.input.MouseButton;
+
 import org.example.View.CityMapView;
 import org.example.model.CityGraph;
 import org.example.model.Intersection;
@@ -58,11 +58,6 @@ public class CityController {
         destination = null;
     }
 
-    public void changeTraffic(int from, int to, int level) {
-        cityGraph.updateTraffic(from, to, level);
-        view.drawCity(); // optional refresh
-    }
-
     public void startTrafficSimulation() {
         trafficTimer = new Timer(true);
 
@@ -92,17 +87,6 @@ public class CityController {
         }, 0, 3000);
     }
 
-    public void stopTrafficSimulation() {
-        if (trafficTimer != null) {
-            trafficTimer.cancel();
-        }
-    }
-
-
-    public void onIntersectionClicked(Intersection intersection) {
-        selectIntersection(intersection.getId());
-        view.drawCity();
-    }
 
 
 
@@ -124,7 +108,7 @@ public class CityController {
 
         System.out.println("Shortest Path = " + currentPath.getPath());
 
-        // 🔥 THIS WAS MISSING
+
         view.setPath(currentPath.getPath());
     }
 

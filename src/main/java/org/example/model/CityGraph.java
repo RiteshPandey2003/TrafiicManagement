@@ -28,13 +28,13 @@ public class CityGraph {
      }
 
 
-    public boolean containsIntersection(int id) {
-        return adjList.containsKey(id);
-    }
-
-    public int size() {
-        return adjList.size();
-    }
+//    public boolean containsIntersection(int id) {
+//        return adjList.containsKey(id);
+//    }
+//
+//    public int size() {
+//        return adjList.size();
+//    }
 
     public Intersection getIntersection(int id) {
         return intersections.get(id);
@@ -78,13 +78,6 @@ public class CityGraph {
         }
     }
 
-
-    private int calculateDistance(Intersection a, Intersection b) {
-        return (int) Math.sqrt(
-                Math.pow(a.getX() - b.getX(), 2) +
-                        Math.pow(a.getY() - b.getY(), 2)
-        );
-    }
 
     public Set<Integer> getAllIntersectionsIds() {
         return intersections.keySet();
